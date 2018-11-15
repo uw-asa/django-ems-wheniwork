@@ -1,5 +1,6 @@
 /*jslint browser: true, plusplus: true */
-/*global jQuery, Handlebars, EMSWhenIWork, moment */
+/*global jQuery, Handlebars, moment */
+
 
 var EMSWhenIWork = (function ($) {
     "use strict";
@@ -95,11 +96,11 @@ var EMSWhenIWork = (function ($) {
 
         window.scheduler.events = {};
 
-        events.sort(function(a,b){
-            return moment(a.shift.start_time).unix() - moment(b.shift.start_time).unix()
-        })
+        events.sort(function(a,b) {
+            return moment(a.shift.start_time).unix() - moment(b.shift.start_time).unix();
+        });
 
-        $.each(events, function () {
+        $.each(events, function() {
 
             var event_start_date = moment(this.shift.start_time),
                 event_end_date = moment(this.shift.end_time),
@@ -123,10 +124,9 @@ var EMSWhenIWork = (function ($) {
                 shift_id: this.shift.id,
                 site_id: this.shift.site_id,
                 in_the_past: false,
-                disabled: (this.schedulable
-                           && (this.shift.id
-                               || true)
-                           && event_start_date.isAfter(now)) ? '' : 'disabled',
+                disabled: (this.schedulable &&
+                           (this.shift.id || true) &&
+                           event_start_date.isAfter(now)) ? '' : 'disabled',
             });
         });
 
@@ -189,10 +189,10 @@ var EMSWhenIWork = (function ($) {
         $.ajax({
             type: 'GET',
             url: api_path('schedule/',
-                                    {
-                                        StartDate: startdate,
-                                        EndDate: enddate,
-                                    }),
+                          {
+                              StartDate: startdate,
+                              EndDate: enddate,
+                          }),
             beforeSend: event_search_in_progress,
             complete: event_search_complete
         })
@@ -214,9 +214,9 @@ var EMSWhenIWork = (function ($) {
                 start_time: wheniwork_event.shift.start_time,
                 end_time: wheniwork_event.shift.end_time
             },
-            button = $('.btn-group[data-shift-name="'
-                       + wheniwork_event.shift.name
-                       + '"] > button:first-child');
+            button = $('.btn-group[data-shift-name="' +
+                       wheniwork_event.shift.name +
+                       '"] > button:first-child');
 
         if (wheniwork_event.shift.id) {
             return;
@@ -237,12 +237,12 @@ var EMSWhenIWork = (function ($) {
                     format = 'h:mm a';
 
                 failure_modal('Cannot Schedule Shift',
-                              'This request conflicts with<p style="text-align: center;">'
-                              + response.conflict_name
-                              + '</p>scheduled from '
-                              + moment(response.conflict_start).format(format)
-                              + ' until '
-                              + moment(response.conflict_end).format(format),
+                              'This request conflicts with<p style="text-align: center;">' +
+                              response.conflict_name +
+                              '</p>scheduled from ' +
+                              moment(response.conflict_start).format(format) +
+                              ' until ' +
+                              moment(response.conflict_end).format(format),
                               {});
             } else {
                 failure_modal('Cannot Schedule Shift',
@@ -262,9 +262,9 @@ var EMSWhenIWork = (function ($) {
         $.ajax({
             type: 'DELETE',
             url: api_path('shift/' + wheniwork_event.shift.id,
-                                    {
-                                        name: wheniwork_event.shift.name,
-                                    })
+                          {
+                              name: wheniwork_event.shift.name,
+                          })
         })
             .fail(function (xhr) {
                 button_stop_loading(button);
@@ -273,8 +273,8 @@ var EMSWhenIWork = (function ($) {
                               xhr);
             })
             .done(function (msg) {
-                if (msg.hasOwnProperty('deleted_shift_id')
-                        && msg.deleted_shift_id == wheniwork_event.shift.id) {
+                if (msg.hasOwnProperty('deleted_shift_id') &&
+                        msg.deleted_shift_id == wheniwork_event.shift.id) {
                     wheniwork_event.shift.id = null;
                     update_schedule_buttons(wheniwork_event);
                 }
@@ -294,6 +294,7 @@ var EMSWhenIWork = (function ($) {
     }
 
     function wheniwork_clear_schedule(e) {
+        /* jshint validthis: true */
         var button = $(this),
             pe = wheniwork_event(button);
 
@@ -303,6 +304,7 @@ var EMSWhenIWork = (function ($) {
     }
 
     function wheniwork_schedule_all(e) {
+        /* jshint validthis: true */
         var button = $(this),
             pe;
 
@@ -336,7 +338,7 @@ var EMSWhenIWork = (function ($) {
         $('body')
             .delegate('.batchswitch .btn-group > button:first-child', 'click', wheniwork_schedule_all)
             .delegate('.list-group .btn-group.unscheduled > button:first-child', 'click', wheniwork_set_schedule)
-            .delegate('.list-group .btn-group.scheduled > button:first-child', 'click', wheniwork_clear_schedule)
+            .delegate('.list-group .btn-group.scheduled > button:first-child', 'click', wheniwork_clear_schedule);
     }
 
     $(document).ready(initialize);
