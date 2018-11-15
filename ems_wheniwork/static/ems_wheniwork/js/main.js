@@ -332,7 +332,6 @@ var EMSWhenIWork = (function ($) {
         });
 
         $("form.event-search").submit(do_event_search);
-        init_term_selector();
         Handlebars.registerPartial('reservation-list', $('#reservation-list-partial').html());
         Handlebars.registerPartial('schedule-button', $('#schedule-button-partial').html());
         $('body')

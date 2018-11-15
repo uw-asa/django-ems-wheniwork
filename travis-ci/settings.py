@@ -25,6 +25,7 @@ MIDDLEWARE = [
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.RemoteUserBackend',
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 ROOT_URLCONF = 'travis-ci.urls'
