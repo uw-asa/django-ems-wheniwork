@@ -39,7 +39,8 @@ class EMSWhenIWorkTest(unittest.TestCase):
 
     def test_api_schedule(self):
         # Issue a GET request.
-        response = self.client.get('/api/v1/schedule/?StartDate=2016-01-02&EndDate=2016-01-02')
+        response = self.client.get(
+            '/api/v1/schedule/?StartDate=2016-01-02&EndDate=2016-01-02')
 
         # Check that the response is 200 OK.
         self.assertEqual(response.status_code, 200)
