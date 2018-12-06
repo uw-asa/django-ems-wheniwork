@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 
 import pytz
 from dateutil import tz
+from django.conf import settings
 from ems_client.models import Status
 from ems_client.service import Service
 from uw_wheniwork.account import Accounts
@@ -165,15 +166,13 @@ def mash_in_wheniwork_shifts(event_shifts, params):
 
     locations = Locations().get_locations()
     for l in locations:
-        if 'Event Assistants' in l.name:
+        if l.name == settings.EMS_WHENIWORK_SCHEDULE_LOCATION:
             location_id = l.location_id
             break
 
     positions = Positions().get_positions()
     for p in positions:
-        if 'Office Event Assistant' in p.name:
-            continue
-        if 'Event Assistant' in p.name:
+        if p.name == settings.EMS_WHENIWORK_SCHEDULE_POSITION:
             position_id = p.position_id
             break
 
