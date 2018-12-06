@@ -30,22 +30,24 @@ def serviceorders_and_shifts(params):
     if not (search['start_date'] and search['end_date']):
         return None
 
-    serviceorders = _ems.get_service_order_details(**search)
+    serviceorder_details = _ems.get_service_order_details(**search)
     bookings = _ems.get_bookings(**search)
 
     # build shifts
     assigned_serviceorders = {}
-    for r in serviceorders:
-        if (r.service_order_start_time is None or
-                r.service_order_end_time is None):
+    for detail in serviceorder_details:
+        if (detail.service_order_start_time is None or
+                detail.service_order_end_time is None):
             continue
 
-        if r.resource_external_reference:
-            assigned_serviceorders[r.service_order_id] = r
+        # If this detail has an external reference,
+        # then its parent service order is "assigned"
+        if detail.resource_external_reference:
+            assigned_serviceorders[detail.service_order_id] = detail
             continue
 
         for b in bookings:
-            if b.id == r.booking_id:
+            if b.id == detail.booking_id:
                 break
 
         # Skip cancelled bookings
@@ -57,12 +59,12 @@ def serviceorders_and_shifts(params):
             'roomname': b.dv_room,
             'name': None,
             'event_name': b.event_name,
-            'resource_description': r.resource_description,
-            'start_time': r.service_order_start_time.strftime("%-I:%M%p"),
-            'end_time': r.service_order_end_time.strftime("%-I:%M%p"),
+            'resource_description': detail.resource_description,
+            'start_time': detail.service_order_start_time.strftime("%-I:%M%p"),
+            'end_time': detail.service_order_end_time.strftime("%-I:%M%p"),
             'hours': None,
-            'service_order_id': r.service_order_id,
-            'booking_id': r.booking_id,
+            'service_order_id': detail.service_order_id,
+            'booking_id': detail.booking_id,
             'building': b.dv_building,
             'room_code': b.room_code,
             'schedulable': True,
@@ -84,14 +86,16 @@ def serviceorders_and_shifts(params):
         }
 
         emstz = pytz.timezone('America/Los_Angeles')
-        StartTime = emstz.localize(
-            datetime.combine(r.booking_date, r.service_order_start_time))
-        EndTime = emstz.localize(
-            datetime.combine(r.booking_date, r.service_order_end_time))
-        if StartTime > EndTime:
-            EndTime += timedelta(days=1)
-        start_utc = StartTime.astimezone(tz.tzutc())
-        end_utc = EndTime.astimezone(tz.tzutc())
+        start_time = emstz.localize(
+            datetime.combine(detail.booking_date,
+                             detail.service_order_start_time))
+        end_time = emstz.localize(
+            datetime.combine(detail.booking_date,
+                             detail.service_order_end_time))
+        if start_time > end_time:
+            end_time += timedelta(days=1)
+        start_utc = start_time.astimezone(tz.tzutc())
+        end_utc = end_time.astimezone(tz.tzutc())
 
         event_shift['hours'] = re.sub(r'(\d+):(\d\d):\d\d', r'\1h\2m',
                                       str(end_utc - start_utc))
