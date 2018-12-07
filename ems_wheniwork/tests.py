@@ -32,7 +32,7 @@ class EMSWhenIWorkTest(unittest.TestCase):
         self.set_user('javerage')
 
         # Issue a GET request.
-        response = self.client.get('/serviceorders')
+        response = self.client.get('/')
 
         # Check that the response is 200 OK.
         self.assertEqual(response.status_code, 200)
