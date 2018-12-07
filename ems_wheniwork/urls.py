@@ -10,9 +10,7 @@ from .views.api.shift import Shift
 from .views.api.status import Status
 
 urlpatterns = [
-    url(r'^$', page_not_found, {'exception': 'none'}, name='ems_wheniwork'),
-
-    url(r'^serviceorders/?$', serviceorders.index, name='serviceorders'),
+    url(r'^$', serviceorders.index, name='ems_wheniwork'),
 
     # Basic EMS data
     url(r'^api/v1/booking/$', Booking().run),
