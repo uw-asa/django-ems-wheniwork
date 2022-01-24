@@ -1,5 +1,6 @@
 import logging
 import re
+import os
 from datetime import datetime, timedelta
 
 import pytz
@@ -54,14 +55,19 @@ def serviceorders_and_shifts(params):
         if b.status_type_id == Status.STATUS_TYPE_CANCEL:
             continue
 
+        if os.name == 'nt':
+            timefmt = "%#I:%M%p"
+        else:
+            timefmt = "%-I:%M%p"
+
         event_shift = {
             'room': b.room_description,
             'roomname': b.dv_room,
             'name': None,
             'event_name': b.event_name,
             'resource_description': detail.resource_description,
-            'start_time': detail.service_order_start_time.strftime("%-I:%M%p"),
-            'end_time': detail.service_order_end_time.strftime("%-I:%M%p"),
+            'start_time': detail.service_order_start_time.strftime(timefmt),
+            'end_time': detail.service_order_end_time.strftime(timefmt),
             'hours': None,
             'service_order_id': detail.service_order_id,
             'booking_id': detail.booking_id,
