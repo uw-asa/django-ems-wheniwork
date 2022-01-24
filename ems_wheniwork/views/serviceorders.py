@@ -1,6 +1,6 @@
 import logging
 import os
-from time import localtime, strftime, time, tzset
+from time import localtime, strftime, time
 
 from authz_group import Group
 from django.conf import settings
@@ -19,8 +19,10 @@ def index(request, template='ems_wheniwork/serviceorders.html'):
 
     status_code = 200
 
-    os.environ['TZ'] = 'America/Los_Angeles'
-    tzset()
+    if os.name != 'nt':
+        from time import tzset
+        os.environ['TZ'] = 'America/Los_Angeles'
+        tzset()
 
     context = {
         'todays_date': strftime("%Y-%m-%d"),
