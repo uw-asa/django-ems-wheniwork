@@ -5,6 +5,7 @@ python:
   - '3.9'
   - '3.9-dev'
 before_script:
+  - pip install git+https://github.com/uw-asa/authz_group.git@django2#egg=AuthZ-Group
   - pip install -e .
   - pip install pycodestyle
   - pip install coverage
