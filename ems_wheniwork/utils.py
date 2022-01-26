@@ -169,9 +169,9 @@ def mash_in_wheniwork_shifts(event_shifts, params):
                 e['shift']['end'] = end_utc.isoformat()
 
     locations = Locations().get_locations()
-    for l in locations:
-        if l.name == settings.EMS_WHENIWORK_SCHEDULE_LOCATION:
-            location_id = l.location_id
+    for location in locations:
+        if location.name == settings.EMS_WHENIWORK_SCHEDULE_LOCATION:
+            location_id = location.location_id
             break
 
     positions = Positions().get_positions()
