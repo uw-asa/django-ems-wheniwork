@@ -181,6 +181,9 @@ window.scheduler = {
 {% block extra_js %}
 {% compress js %}
 <script src="{% static "vendor/js/moment.min.js" %}"></script>
+{% if not has_less_compiled %}
+<script src="{% static "vendor/js/less-1.7.3.min.js" %}"></script>
+{% endif %}
 <script src="{% static "ems_wheniwork/js/main.js" %}"></script>
 {% endcompress %}
 {% endblock extra_js %}
